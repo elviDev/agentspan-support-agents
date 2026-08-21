@@ -1,0 +1,22 @@
+[project]
+name = "ai-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Ifeanyi Elvis Okeke", email = "elvidiho@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "agentspan>=0.2.0",
+    "firecrawl-py>=4.38.0",
+    "pydantic>=2.13.4",
+    "python-dotenv>=1.2.3",
+]
+
+[project.scripts]
+ai-agent = "ai_agent:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
