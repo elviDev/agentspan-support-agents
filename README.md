@@ -6,6 +6,9 @@ Lightweight command-line AI agents built with Agentspan.
 
 - Agent 1: personal assistant with local time tool support
 - Agent 2: customer support agent with RAG-style document lookup, input guardrails, and human-in-the-loop refund approval
+- Agent 3: web research and article-writing pipelines with sequential, parallel, nested, and worker modes
+- Durable workflow example that can resume after an interruption
+- Mock test for Agent 2 that runs without model or external service calls
 - Agentspan `AgentRuntime` integration
 - Conversation memory support
 - Environment variables loaded from `.env`
@@ -30,6 +33,24 @@ Agent 2 also includes fixes for terminal stability:
 - Handles structured output returned as either a Pydantic model, dictionary, or string.
 - Safely rejects refund approval if the terminal input closes during review.
 
+### Agent 3: Research Pipelines
+
+Agent 3 demonstrates multi-agent orchestration with Firecrawl:
+
+- `sequential`: researcher, writer, and editor run in order.
+- `parallel`: market and risk analysts run as a team.
+- `nested`: the analyst team feeds the publishing pipeline.
+- `worker`: serves the nested pipeline through the Agentspan runtime.
+
+Reports are saved as Markdown files under `reports/`. Agent 3 requires
+`FIRECRAWL_API_KEY` in `.env`.
+
+### Crash and Resume Demo
+
+`crash_resume_demo.py` runs a ten-step durable workflow. In `start` mode, copy the
+printed execution ID if the process stops. Set `MODE = "resume"`, paste the ID into
+`EXECUTION_ID`, and run the script again to reconnect to the saved execution.
+
 ## Requirements
 
 - Python 3.14+
@@ -43,6 +64,12 @@ uv sync
 ```
 
 Create a `.env` file with the credentials required by your model provider. The `.env` file is ignored by Git.
+
+For Agent 3, also add a Firecrawl key:
+
+```dotenv
+FIRECRAWL_API_KEY=your-firecrawl-key
+```
 
 ## Run
 
@@ -59,6 +86,32 @@ uv run python agents/agent2.py
 ```
 
 Type `q` to exit.
+
+Run Agent 3:
+
+```bash
+uv run python agents/agent3.py
+```
+
+Run the crash/resume demo:
+
+```bash
+uv run python agents/crash_resume_demo.py
+```
+
+Run the Agent 2 mock test:
+
+```bash
+# Git Bash
+PYTHONPATH=. uv run --with pytest pytest -q tests/test_agent2.py
+
+# PowerShell
+$env:PYTHONPATH = "."
+uv run --with pytest pytest -q tests/test_agent2.py
+```
+
+The test should report one passing test and does not require a live model or
+knowledge-base service.
 
 ## Memory
 
